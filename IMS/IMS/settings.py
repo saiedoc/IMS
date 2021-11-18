@@ -78,7 +78,7 @@ DATABASES = {
 
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
 
-        'NAME': 'ims',
+        'NAME': 'IMS',
 
         'USER': 'postgres',
 

@@ -28,18 +28,21 @@ def signUp(request):
     if password == confirm_password:
         company = Company(company_name=company_name)
         company.save()
-        if  signUpData["role"] == "1":
+        company = Company.objects.filter(company_name = company_name).first()
+        if  signUpData["role"] == 1:
             account = Account(username=username, email=email, phone_number=phone_number, password=password, company=company,
                           role=1)
-        elif signUpData["role"] == "2":
+            account.save()
+        elif signUpData["role"] == 2:
             account = Account(username=username, email=email, phone_number=phone_number, password=password,
                               company=company,
                               role=2)
-        elif signUpData["role"] == "3":
+            account.save()
+        elif signUpData["role"] == 3:
             account = Account(username=username, email=email, phone_number=phone_number, password=password,
                               company=company,
                               role=3)
-        account.save()
+            account.save()
         return HttpResponse("Signed Up")
     elif password != confirm_password:
         return HttpResponse("Passwords don't match")
@@ -52,15 +55,15 @@ def login(request):
     username = loginData["username"]
     password = loginData["password"]
     account = Account.objects.filter(username = username,password = password).first()
-    dict_obj = model_to_dict(account)
-    jsonAccount = json.dumps(dict_obj)
+    jsonAccount = json.dumps(account.as_dict())
     return HttpResponse(jsonAccount)
 
 def getProducts(request):
-    productsQS = Product.objects.all()
-    products = productsQS.values()
-    json_products = json.dumps(products)
-    return HttpResponse(json_products)
+    products = Product.objects.all()
+    json_products = list()
+    for product in products:
+        json_products.append(json.dumps(product.as_dict()))
+    return HttpResponse(json.dumps(json_products))
 
 def addProduct(request):
     productData = json.loads(request.body)
@@ -112,9 +115,10 @@ def updateStock(request):
 
 def getPurchaseOrders(request):
     purchaseOrders = PurchaseOrder.objects.all()
-    dict_products = model_to_dict(purchaseOrders)
-    json_products = json.dumps(dict_products)
-    return HttpResponse(json_products)
+    json_purchaseOrders = list()
+    for purchase_order in purchaseOrders:
+        json_purchaseOrders.append(json.dumps(purchase_order.as_dict()))
+    return HttpResponse(json.dumps(json_purchaseOrders))
 
 def makePurchaseOrder(request):
     purchaseOrderData = json.loads(request.body)
@@ -158,7 +162,7 @@ def removePurchaseOrder(request):
     purchaseOrderData = json.loads(request.body)
     purchase_order_id = purchaseOrderData["purchase_order_id"]
     PurchaseOrder.objects.filter(purchase_order_id = purchase_order_id).delete()
-    return HttpResponse("Purcahse order deleted.")
+    return HttpResponse("Purchase order removed.")
 
 
 

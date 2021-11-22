@@ -1,0 +1,6 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+/DjangoEnv
+/main.py
+/IMS/IMS/settings.py

@@ -17,6 +17,8 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
-    path('IMSapp/', include('IMSapp.urls')),
+    path('account/',include('AccountManagement.urls')),
+    path('pc/',include('ProductsAndCompanies.urls')),
+    path('transaction/',include('TransactionManagement.urls')),
     path('admin/', admin.site.urls)
 ]

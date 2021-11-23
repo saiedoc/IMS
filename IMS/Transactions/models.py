@@ -8,7 +8,6 @@ class PurchaseOrder(models.Model):
     purchase_order_date = models.DateTimeField(null=True, blank=True)
     purchase_order_status = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(3)])
     account = models.ForeignKey("Accounts.Account", on_delete=models.CASCADE,null=True, blank=True)
-    purchase_quantity = models.IntegerField(null=True, blank=True)
     products = models.ManyToManyField("Products.Product",null=True, blank=True)
 
     def as_dict(self):
@@ -17,14 +16,13 @@ class PurchaseOrder(models.Model):
             "purcahse_order_date": self.purchase_order_date,
             "purchase_order_status": self.purchase_order_status,
             "account_id": self.account.account_id,
-            "purchase_quantity": self.purchase_quantity,
             "products": [],
             "purchase_cost": 0
         }
 
         for product in self.products.all():
             PO["products"].append(product.as_dict())
-            PO["purchase_cost"] += product.product_price
+            PO["purchase_cost"] += product.quantity * product.product_price
 
         return PO
 

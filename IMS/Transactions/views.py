@@ -18,14 +18,13 @@ def getPurchaseOrders(request):
 
 def makePurchaseOrder(request):
     purchaseOrderData = json.loads(request.body)
-    purchase_order_id = purchaseOrderData["purchase_order_id"]
     purchase_order_date = purchaseOrderData["purchase_order_date"]
     purchase_order_status = purchaseOrderData["purchase_order_status"]
     purchase_quantity = purchaseOrderData["purchase_quantity"]
     account_id = purchaseOrderData["account_id"]
     products = purchaseOrderData["products"]
     account = Account.objects.filter(account_id = account_id).first()
-    purchaseOrder = PurchaseOrder(purchase_order_id = purchase_order_id , purchase_order_date = purchase_order_date
+    purchaseOrder = PurchaseOrder(purchase_order_date = purchase_order_date
                                   ,purchase_order_status = purchase_order_status,purchase_quantity = purchase_quantity
                                   ,account = account)
     for product in products:
@@ -71,7 +70,6 @@ def getSaleOrders(request):
 
 def makeSaleOrder(request):
     saleOrderData = json.loads(request.body)
-    sale_order_id = saleOrderData['sale_order_id']
     sale_order_date = saleOrderData['sale_order_date']
     account_id = saleOrderData['account_id']
     account = Account.objects.filter(account_id = account_id).first()
@@ -83,7 +81,7 @@ def makeSaleOrder(request):
         original_product.quantity = original_product.quantity - product.quantity
         original_product.save()
 
-    saleOrder = SaleOrder(sale_order_id = sale_order_id,sale_order_date = sale_order_date,
+    saleOrder = SaleOrder(sale_order_date = sale_order_date,
                           sale_order_status = 1,account = account,purchase_order = purchaseOrder)
     saleOrder.save()
     purchaseOrder.save()
@@ -109,14 +107,13 @@ def getReciptOrders(request):
 
 def makeReceiptOrder(request):
     receiptOrderData = json.loads(request.body)
-    receipt_order_id = receiptOrderData['receipt_order_id']
     receipt_order_date = receiptOrderData['receipt_order_date']
     account_id = receiptOrderData['account_id']
     account = Account.objects.filter(account_id = account_id).first()
     sale_order_id = receiptOrderData['sale_order_id']
     saleOrder = SaleOrder.objects.filter(sale_order_id = sale_order_id).first()
     saleOrder.sale_order_status = 2
-    receiptOrder = ReceiptOrder(receipt_order_id = receipt_order_id,receipt_order_date = receipt_order_date,
+    receiptOrder = ReceiptOrder(receipt_order_date = receipt_order_date,
                                 account = account,sale_order = saleOrder)
 
 

@@ -4,6 +4,7 @@ from django.db import models
 # Create your models here.
 
 class Review(models.Model):
+
     review_id = models.AutoField(primary_key=True)
     review_text = models.CharField(max_length=1000, null=True, blank=True)
     review_date = models.DateTimeField(null=True, blank=True)

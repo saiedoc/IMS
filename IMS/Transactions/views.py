@@ -10,11 +10,20 @@ from Transactions.models import PurchaseOrder, SaleOrder, ReceiptOrder
 
 
 def getPurchaseOrders(request):
-    purchaseOrders = PurchaseOrder.objects.filter(purchase_order_status = 1).all()
+    purchaseOrderData = json.load(request.body)
+    account_id = purchaseOrderData['account_id']
+    account = Account.objects.filter(account_id = account_id).first()
+    purchaseOrders = PurchaseOrder.objects.filter(purchase_order_status = 1,account = account).all()
     json_purchaseOrders = list()
     for purchase_order in purchaseOrders:
         json_purchaseOrders.append(json.dumps(purchase_order.as_dict()))
     return HttpResponse(json.dumps(json_purchaseOrders))
+
+def getPurchaseOrder(request):
+    purchaseOrderData = json.load(request.body)
+    purchase_order_id = purchaseOrderData['purchase_order_id']
+    purchase_order = PurchaseOrder.objects.filter(purchase_order_id = purchase_order_id).first()
+    return HttpResponse(json.dumps(purchase_order.as_dict()))
 
 def makePurchaseOrder(request):
     purchaseOrderData = json.loads(request.body)
@@ -62,11 +71,21 @@ def removePurchaseOrder(request):
     return HttpResponse("Purchase order removed.")
 
 def getSaleOrders(request):
-    saleOrders = SaleOrder.objects.filter(sale_order_status = 1).all()
+    saleOrderData = json.load(request.body)
+    account_id = saleOrderData['account_id']
+    account = Account.objects.filter(account_id=account_id).first()
+    saleOrders = SaleOrder.objects.filter(sale_order_status = 1,account = account).all()
     jsonSaleOrders = list()
     for saleOrder in saleOrders:
         jsonSaleOrders.append(json.dumps(saleOrder.as_dict()))
     return HttpResponse(json.dumps(jsonSaleOrders))
+
+def getSaleOrder(request):
+    saleOrderData = json.load(request.body)
+    sale_order_id = saleOrderData['sale_order_id']
+    sale_order = SaleOrder.objects.filter(sale_order_id = sale_order_id).first()
+    return HttpResponse(json.dumps(sale_order.as_dict()))
+
 
 def makeSaleOrder(request):
     saleOrderData = json.loads(request.body)
@@ -99,11 +118,20 @@ def removeSaleOrder(request):
     return HttpResponse('Sale order removed')
 
 def getReciptOrders(request):
+    receiptOrderData = json.load(request.body)
+    account_id = receiptOrderData['account_id']
+    account = Account.objects.filter(account_id=account_id).first()
     receiptOrders = ReceiptOrder.objects.filter.all()
     jsonReceiptOrders = list()
     for receiptOrder in receiptOrders:
         jsonReceiptOrders.append(json.dumps(receiptOrder.as_dict()))
     return HttpResponse(json.dumps(jsonReceiptOrders))
+
+def getReceiptOrder(request):
+    receiptOrderData = json.load(request.body)
+    receipt_order_id = receiptOrderData['receipt_order_id']
+    receipt_order = ReceiptOrder.objects.filter(receipt_order_id = receipt_order_id).first()
+    return HttpResponse(json.dumps(sale_order.as_dict()))
 
 def makeReceiptOrder(request):
     receiptOrderData = json.loads(request.body)

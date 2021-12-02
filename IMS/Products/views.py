@@ -6,15 +6,24 @@ from django.shortcuts import render
 
 # Create your views here.
 from Accounts.views import checkAdminPermission
-from Products.models import Product, Company
+from .models import Product, Company
 
 
-def getProducts(request):
-    products = Product.objects.all()
+def getCompanyProducts(request):
+    productData = json.loads(request)
+    company_id = productData['company_id']
+    company = Company.objects.filter(company_id = company_id).first()
+    products = Product.objects.filter(company = company).all()
     json_products = list()
     for product in products:
         json_products.append(json.dumps(product.as_dict()))
     return HttpResponse(json.dumps(json_products))
+
+def getProduct(request):
+    productData = json.loads(request)
+    product_id = productData['product_id']
+    product = Product.objects.filter(product_id = product_id).first()
+    return HttpResponse(json.dumps(product.as_dict()))
 
 def addProduct(request):
     productData = json.loads(request.body)

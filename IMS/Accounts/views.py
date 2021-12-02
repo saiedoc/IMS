@@ -4,8 +4,10 @@ from django.http import HttpResponse
 from django.shortcuts import render
 
 # Create your views here.
-from Products.models import Company
+
 from .models import Account
+from ..Products.models import Company
+
 
 def checkAdminPermission(account_id):
     account = Account.objects.filter(account_id = account_id).first()

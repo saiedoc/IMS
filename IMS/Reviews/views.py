@@ -4,9 +4,9 @@ from django.http import HttpResponse
 from django.shortcuts import render
 
 # Create your views here.
-from Accounts.models import Account
-from Products.models import Product, Company
-from Reviews.models import Review
+from IMS.Accounts.models import Account
+from IMS.Products.models import Product, Company
+from IMS.Reviews.models import Review
 
 
 def addProdcutReview(request):
@@ -54,5 +54,37 @@ def modifyReview(request):
     review.rate = rate
     review.save()
     return HttpResponse('Review modified.')
+
+def getReview(request):
+    productReviewData = json.load(request.body)
+    review_id = productReviewData['review_id']
+    review = Review.objects.filter(review_id = review_id).first()
+    return HttpResponse(json.dumps(review.as_dict()))
+
+def getProductReviews(request):
+    productReviewData = json.load(request.body)
+    product_id = productReviewData['product_id']
+    product = Product.objects.filter(product_id=product_id).first()
+    reviews = Review.objects.filter(product = product).all()
+    json_reviews = list()
+    for review in reviews:
+        json_reviews.append(json.dumps(review.as_dict()))
+    return  HttpResponse(json.dumps(json_reviews))
+
+def getCompanyReviews(request):
+    productReviewData = json.load(request.body)
+    company_id = productReviewData['company_id']
+    company = Company.objects.filter(company_id=company_id).first()
+    reviews = Review.objects.filter(company = company).all()
+    json_reviews = list()
+    for review in reviews:
+        json_reviews.append(json.dumps(review.as_dict()))
+    return  HttpResponse(json.dumps(json_reviews))
+
+
+
+
+
+
 
 
